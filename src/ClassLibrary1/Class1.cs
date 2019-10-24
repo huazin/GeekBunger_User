@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fiap.GeekBurguer.User.Contract
+namespace ClassLibrary1
 {
     public class Class1
     {
