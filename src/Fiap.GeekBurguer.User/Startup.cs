@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Fiap.GeekBurguer.Users
 {
@@ -15,8 +16,15 @@ namespace Fiap.GeekBurguer.Users
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var mvcCoreBuilder = services.AddMvcCore();
+            services.AddMvc();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "GeekBurguer Users API", Version = "v1" });
+            });
+
+            var mvcCoreBuilder = services.AddMvcCore();
+                        
             mvcCoreBuilder
             .AddFormatterMappings()
             .AddJsonFormatters()
@@ -30,6 +38,14 @@ namespace Fiap.GeekBurguer.Users
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekBurguer Users API v1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseMvc();
 
