@@ -53,7 +53,7 @@ namespace Fiap.GeekBurguer.Users.Controller
         }    
 
 
-        [HttpGet("{user}")]
+        [HttpGet]
         public IActionResult GetUserByFace(User user)
         {
             if (user.Face == "ImagemUm")
@@ -76,10 +76,10 @@ namespace Fiap.GeekBurguer.Users.Controller
             return Ok(restricao);
         }
 
-        [HttpPost("{foodRestrictions}")]
+        [HttpPost]
         public IActionResult PostFoodRestrictionsByUserId(FoodRestrictions foodRestrictions)
         {
-            if (foodRestrictions != null)
+            if (foodRestrictions.UserId != Guid.Empty)
             {
                 return Ok();
             }
