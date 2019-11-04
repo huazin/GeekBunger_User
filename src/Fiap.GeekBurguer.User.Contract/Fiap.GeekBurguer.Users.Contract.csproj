@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Fiap GeekBurguer Users Microservice Contract</Description>
+    <Authors>Bruno Lemes, Robson, Wallace</Authors>
   </PropertyGroup>
 
 </Project>
