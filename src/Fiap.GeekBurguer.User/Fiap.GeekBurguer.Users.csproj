@@ -17,6 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Fiap.GeekBurguer.Domain\Fiap.GeekBurguer.Domain.csproj" />
+    <ProjectReference Include="..\..\Fiap.GeekBurguer.Persistence\Fiap.GeekBurguer.Persistence.csproj" />
     <ProjectReference Include="..\Fiap.GeekBurguer.User.Contract\Fiap.GeekBurguer.Users.Contract.csproj" />
   </ItemGroup>
 

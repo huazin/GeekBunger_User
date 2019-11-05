@@ -46,7 +46,7 @@ namespace Fiap.GeekBurguer.Users.Controller
                 {
                     RequesterId = Guid.NewGuid(),
                     UserId = UserIdUm,
-                    Restrictions = "['soja','gluten']",
+                    Restrictions = new List<string>() { "soja", "gluten" },
                     Others = "brocolis"
                 }
             );
@@ -55,7 +55,7 @@ namespace Fiap.GeekBurguer.Users.Controller
                 {
                     RequesterId = Guid.NewGuid(),
                     UserId = UserIdDois,
-                    Restrictions = "['lactose']",
+                    Restrictions = new List<string>() { "lactose" },
                     Others = "ovos"
                 }
             );
