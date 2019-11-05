@@ -8,6 +8,7 @@ using Fiap.GeekBurguer.Users.Contract;
 using System.IO;
 using Microsoft.ProjectOxford.Face;
 using Microsoft.ProjectOxford.Face.Contract;
+using Microsoft.Extensions.Configuration;
 
 namespace Fiap.GeekBurguer.Users.Controller
 {
@@ -18,13 +19,16 @@ namespace Fiap.GeekBurguer.Users.Controller
 
         private Guid UserIdUm;
         private Guid UserIdDois;
-        public static FaceServiceClient faceServiceClient;
-        public static Guid FaceListId;
         private string faceUm;
         private string faceDois;
 
         private List<FoodRestrictions> listaRestricoes;
 
+        #endregion
+        #region Face Properties
+        public static IConfiguration Configuration;
+        public static FaceServiceClient faceServiceClient;
+        public static Guid FaceListId;
         #endregion
 
         public UsersController()
@@ -38,7 +42,8 @@ namespace Fiap.GeekBurguer.Users.Controller
             listaRestricoes = new List<FoodRestrictions>();
 
             listaRestricoes.Add(
-                new FoodRestrictions {
+                new FoodRestrictions
+                {
                     RequesterId = Guid.NewGuid(),
                     UserId = UserIdUm,
                     Restrictions = "['soja','gluten']",
@@ -54,12 +59,53 @@ namespace Fiap.GeekBurguer.Users.Controller
                     Others = "ovos"
                 }
             );
-        }    
+        }
 
 
         [HttpGet]
         public IActionResult GetUserByFace(User user)
         {
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            FaceListId = Guid.Parse(Configuration["FaceListId"]);
+
+            faceServiceClient = new FaceServiceClient(Configuration["KeyFaceDetectionAPI"], Configuration["UrlFaceDetectionApi"]);
+
+            while (true)
+            {
+                try
+                {
+                    var containsAnyFaceOnList = UpsertFaceListAndCheckIfContainsFaceAsync().Result;
+                    MemoryStream imageStream = new MemoryStream(Convert.FromBase64String(user.Face));
+                    var face = DetectFaceAsync(imageStream).Result;
+                    if (face != null)
+                    {
+                        Guid? persistedId = null;
+                        if (containsAnyFaceOnList)
+                            persistedId = FindSimilarAsync(face.FaceId, FaceListId).Result;
+
+                        if (persistedId == null)
+                        {
+                            persistedId = AddFaceAsync(FaceListId, imageStream).Result;
+                            Console.WriteLine($"New User with FaceId {persistedId}");
+                        }
+                        else
+                            Console.WriteLine($"Face Exists with Face {persistedId}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Not a face!");
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Probably Rate Limit for API was reached, please try again later");
+                }
+            }
+
             if (user.Face == "ImagemUm")
             {
                 user.UserId = UserIdUm;
@@ -91,8 +137,7 @@ namespace Fiap.GeekBurguer.Users.Controller
             return new NotFoundResult();
         }
 
-
-
+        #region Api Face Detection
         private static async Task<bool> UpsertFaceListAndCheckIfContainsFaceAsync()
         {
             var faceListId = FaceListId.ToString();
@@ -119,15 +164,12 @@ namespace Fiap.GeekBurguer.Users.Controller
             return similarFace?.PersistedFaceId;
         }
 
-        private static async Task<Face> DetectFaceAsync(string imageFilePath)
+        private static async Task<Face> DetectFaceAsync(Stream imageStream)
         {
             try
             {
-                using (Stream imageFileStream = System.IO.File.OpenRead(imageFilePath))
-                {
-                    var faces = await faceServiceClient.DetectAsync(imageFileStream);
-                    return faces.FirstOrDefault();
-                }
+                var faces = await faceServiceClient.DetectAsync(imageStream);
+                return faces.FirstOrDefault();
             }
             catch (Exception)
             {
@@ -135,16 +177,13 @@ namespace Fiap.GeekBurguer.Users.Controller
             }
         }
 
-        private static async Task<Guid?> AddFaceAsync(Guid faceListId, string imageFilePath)
+        private static async Task<Guid?> AddFaceAsync(Guid faceListId, Stream imageStream)
         {
             try
             {
                 AddPersistedFaceResult faceResult;
-                using (Stream imageFileStream = System.IO.File.OpenRead(imageFilePath))
-                {
-                    faceResult = await faceServiceClient.AddFaceToFaceListAsync(faceListId.ToString(), imageFileStream);
-                    return faceResult.PersistedFaceId;
-                }
+                faceResult = await faceServiceClient.AddFaceToFaceListAsync(faceListId.ToString(), imageStream);
+                return faceResult.PersistedFaceId;
             }
             catch (Exception)
             {
@@ -152,5 +191,6 @@ namespace Fiap.GeekBurguer.Users.Controller
                 return null;
             }
         }
+        #endregion
     }
 }
