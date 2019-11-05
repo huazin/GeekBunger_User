@@ -4,10 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap.GeekBurguer.Users", "src\Fiap.GeekBurguer.User\Fiap.GeekBurguer.Users.csproj", "{0CF74FB2-F4C4-4334-B9B4-7C50CE0C932D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7F1AF361-B287-4D6D-BDE3-1BD0C9CC8F70} = {7F1AF361-B287-4D6D-BDE3-1BD0C9CC8F70}
+		{DD87CFAB-1E6A-4BB1-8F99-A4A571939AD6} = {DD87CFAB-1E6A-4BB1-8F99-A4A571939AD6}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap.GeekBurguer.Users.Contract", "src\Fiap.GeekBurguer.User.Contract\Fiap.GeekBurguer.Users.Contract.csproj", "{E17B5399-5CDE-4C87-BF78-665BEB2D30D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiap.GeekBurguer.Persistence", "Fiap.GeekBurguer.Persistence\Fiap.GeekBurguer.Persistence.csproj", "{7F1AF361-B287-4D6D-BDE3-1BD0C9CC8F70}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DD87CFAB-1E6A-4BB1-8F99-A4A571939AD6} = {DD87CFAB-1E6A-4BB1-8F99-A4A571939AD6}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fiap.GeekBurguer.Domain", "Fiap.GeekBurguer.Domain\Fiap.GeekBurguer.Domain.csproj", "{DD87CFAB-1E6A-4BB1-8F99-A4A571939AD6}"
 EndProject

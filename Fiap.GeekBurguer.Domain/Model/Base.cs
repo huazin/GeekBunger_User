@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Fiap.GeekBurguer.Domain.Model
 {
-    public class User : Base
+    public class Base
     {
-        public string Face { get; set; }
-        public Guid RequesterId { get; set; }
+        [Key]
+        public Guid ID { get; set; }
     }
 }
