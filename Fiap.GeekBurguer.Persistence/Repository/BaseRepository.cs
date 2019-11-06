@@ -1,4 +1,5 @@
-﻿using Fiap.GeekBurguer.Domain.Model;
+﻿using Fiap.GeekBurguer.Core.Service;
+using Fiap.GeekBurguer.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,10 +9,12 @@ namespace Fiap.GeekBurguer.Persistence.Repository
     public class BaseRepository<T> where T : Base
     {
         private MyDbContext _Db;
+        private IMessageService<T> _messageService;
 
-        public BaseRepository(MyDbContext context)
+        public BaseRepository(MyDbContext context, IMessageService<T> messageService)
         {
             _Db = context;
+            _messageService = messageService;
         }
         public void Inserir(T obj)
         {
@@ -35,7 +38,10 @@ namespace Fiap.GeekBurguer.Persistence.Repository
         {
             var objBase = Obter(objeto.ID);
             objBase = objeto;
+            _messageService.AddToMessageList(_Db.ChangeTracker.Entries<T>());
             _Db.SaveChanges();
+
+            _messageService.SendMessageAsync();
             return objBase;
         }
 
