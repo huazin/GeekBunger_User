@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using Fiap.GeekBurguer.Core.Service;
 
 namespace Fiap.GeekBurguer.Users
 {
@@ -33,6 +34,8 @@ namespace Fiap.GeekBurguer.Users
             {
                 c.SwaggerDoc("v1", new Info { Title = "GeekBurguer Users API", Version = "v1" });
             });
+
+            services.AddTransient(typeof(IMessageService<>), typeof(MessageService<>));
 
             var mvcCoreBuilder = services.AddMvcCore();
                         

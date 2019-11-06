@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fiap.GeekBurguer.Core\Fiap.GeekBurguer.Core.csproj" />
     <ProjectReference Include="..\Fiap.GeekBurguer.Domain\Fiap.GeekBurguer.Domain.csproj" />
   </ItemGroup>
 
