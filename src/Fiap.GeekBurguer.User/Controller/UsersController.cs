@@ -88,34 +88,21 @@ namespace Fiap.GeekBurguer.Users.Controller
                             persistedId = FindSimilarAsync(face.FaceId, FaceListId).Result;
 
                         if (persistedId == null)
-                        {
                             persistedId = AddFaceAsync(FaceListId, imageStream).Result;
-                            Console.WriteLine($"New User with FaceId {persistedId}");
-                        }
-                        else
-                            Console.WriteLine($"Face Exists with Face {persistedId}");
+
+                        user.UserId = (Guid)persistedId;
+                        return Ok(user);
                     }
                     else
                     {
-                        Console.WriteLine("Not a face!");
+                        return BadRequest("Imagem não é uma face!");
                     }
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Probably Rate Limit for API was reached, please try again later");
+                    return BadRequest("Ocorreu um erro durante o reconhecimento facial!");
                 }
             }
-
-            if (user.Face == "ImagemUm")
-            {
-                user.UserId = UserIdUm;
-            }
-            else if (user.Face == "ImagemDois")
-            {
-                user.UserId = UserIdDois;
-            }
-
-            return Ok(user);
         }
 
         [HttpGet("{userId}/GetFoodRestrictionsByUserId")]
