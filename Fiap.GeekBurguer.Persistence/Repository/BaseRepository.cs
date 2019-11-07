@@ -8,33 +8,33 @@ namespace Fiap.GeekBurguer.Persistence.Repository
 {
     public class BaseRepository<T> where T : Base
     {
-        private MyDbContext _Db;
-        private IMessageService<T> _messageService;
+        protected MyDbContext _Db;
+        protected IMessageService<T> _messageService;
 
         public BaseRepository(MyDbContext context, IMessageService<T> messageService)
         {
             _Db = context;
             _messageService = messageService;
         }
-        public void Inserir(T obj)
+        public virtual void Inserir(T obj)
         {
             _Db.Add(obj);
             _Db.SaveChanges();
         }
 
 
-        public void InserirLote(List<T> lista)
+        public virtual void InserirLote(List<T> lista)
         {
             _Db.AddRange(lista);
             _Db.SaveChanges();
         }
 
-        public T Obter(Guid id)
+        public virtual T Obter(Guid id)
         {
             return (T)_Db.Find(typeof(T), id);
         }
 
-        public T Alterar(T objeto)
+        public virtual T Alterar(T objeto)
         {
             var objBase = Obter(objeto.ID);
             objBase = objeto;
@@ -45,7 +45,7 @@ namespace Fiap.GeekBurguer.Persistence.Repository
             return objBase;
         }
 
-        public void Remover(T objeto)
+        public virtual void Remover(T objeto)
         {
             _Db.Remove(objeto);
         }

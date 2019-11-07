@@ -20,5 +20,6 @@ namespace Fiap.GeekBurguer.Persistence
 
         public DbSet<User> User { get; set; }
         public DbSet<Restriction> Restriction { get; set; }
+        public DbSet<RestrictionOther> RestrictionOther { get; set; }
     }
 }

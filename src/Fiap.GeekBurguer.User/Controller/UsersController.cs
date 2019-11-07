@@ -9,6 +9,9 @@ using System.IO;
 using Microsoft.ProjectOxford.Face;
 using Microsoft.ProjectOxford.Face.Contract;
 using Microsoft.Extensions.Configuration;
+using Fiap.GeekBurguer.Persistence.Repository;
+using AutoMapper;
+using Fiap.GeekBurguer.Users.Contract.Dominios;
 
 namespace Fiap.GeekBurguer.Users.Controller
 {
@@ -29,10 +32,15 @@ namespace Fiap.GeekBurguer.Users.Controller
         public static IConfiguration Configuration;
         public static FaceServiceClient faceServiceClient;
         public static Guid FaceListId;
+
+        private FoodRestrictionRepository _repo;
+        private readonly IMapper _mapper;
         #endregion
 
-        public UsersController()
+        public UsersController(FoodRestrictionRepository repo, IMapper map)
         {
+            _repo = repo;
+            _mapper = map;
             UserIdUm = new Guid("31914279-0fec-44a3-864e-70a31c8bf832");
             UserIdDois = new Guid("5673d5ce-2284-4786-984d-a8d69b2fd8a4");
 
@@ -46,8 +54,8 @@ namespace Fiap.GeekBurguer.Users.Controller
                 {
                     RequesterId = Guid.NewGuid(),
                     UserId = UserIdUm,
-                    Restrictions = new List<string>() { "soja", "gluten" },
-                    Others = "brocolis"
+                    Restrictions = new List<Restriction>() { new Restriction("soja"), new Restriction("gluten") },
+                    Others = new RestrictionOther("brocolis")
                 }
             );
             listaRestricoes.Add(
@@ -55,14 +63,14 @@ namespace Fiap.GeekBurguer.Users.Controller
                 {
                     RequesterId = Guid.NewGuid(),
                     UserId = UserIdDois,
-                    Restrictions = new List<string>() { "lactose" },
-                    Others = "ovos"
+                    Restrictions = new List<Restriction>() { new Restriction( "lactose" )},
+                    Others = new RestrictionOther("ovos")
                 }
             );
         }
 
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult GetUserByFace(User user)
         {
             Configuration = new ConfigurationBuilder()
@@ -121,16 +129,19 @@ namespace Fiap.GeekBurguer.Users.Controller
         [HttpGet("{userId}/GetFoodRestrictionsByUserId")]
         public IActionResult GetFoodRestrictionsByUserId(Guid userId)
         {
-            FoodRestrictions restricao = listaRestricoes.Find(l => l.UserId == userId);
+            var foodRestricao = _repo.Obter(userId);
+            FoodRestrictions restricao = _mapper.Map<FoodRestrictions>(foodRestricao);
 
             return Ok(restricao);
         }
 
-        [HttpPost]
+        [HttpPost("PostFoodRestrictionsByUserId")]
         public IActionResult PostFoodRestrictionsByUserId(FoodRestrictions foodRestrictions)
         {
             if (foodRestrictions.UserId != Guid.Empty)
             {
+                var restrictions = _mapper.Map<Fiap.GeekBurguer.Domain.Model.FoodRestrictions>(foodRestrictions);
+                _repo.Inserir(restrictions);
                 return Ok();
             }
 
