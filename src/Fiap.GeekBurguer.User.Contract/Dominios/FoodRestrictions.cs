@@ -1,5 +1,4 @@
-﻿using Fiap.GeekBurguer.Users.Contract.Dominios;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Fiap.GeekBurguer.Users.Contract

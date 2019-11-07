@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Fiap.GeekBurguer.Users.Contract.Dominios
+namespace Fiap.GeekBurguer.Users.Contract
 {
     public class Restriction
     {
