@@ -70,7 +70,7 @@ namespace Fiap.GeekBurguer.Users.Controller
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            FaceListId = Guid.Parse(Configuration["FaceListId"]);
+            FaceListId = Guid.Parse(confi ["FaceListId"]);
 
             faceServiceClient = new FaceServiceClient(Configuration["KeyFaceDetectionAPI"], Configuration["UrlFaceDetectionApi"]);
 

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using Fiap.GeekBurguer.Core.Service;
+using System.IO;
 
 namespace Fiap.GeekBurguer.Users
 {
@@ -43,6 +44,11 @@ namespace Fiap.GeekBurguer.Users
             .AddFormatterMappings()
             .AddJsonFormatters()
             .AddCors();
+
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
