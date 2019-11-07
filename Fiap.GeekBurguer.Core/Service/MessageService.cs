@@ -40,7 +40,9 @@ namespace Fiap.GeekBurguer.Core.Service
                 MessageId = Guid.NewGuid().ToString(),
                 Label = entity.Entity.ID.ToString()
             };
-        }        public async void SendMessageAsync()
+        }
+
+        public async void SendMessageAsync()
         {
             var connectionString = Configuration["connectionStrings:serviceBusConnectionString"];
             var queueClient = new QueueClient(connectionString, "ProductChanged");
@@ -70,7 +72,7 @@ namespace Fiap.GeekBurguer.Core.Service
             await _lastTask;
             var closeTask = queueClient.CloseAsync();
             await closeTask;
-            //HandleException(closeTask);
+            HandleException(closeTask);
         }
         private async Task SendAsync(QueueClient queueClient)
         {
@@ -86,12 +88,27 @@ namespace Fiap.GeekBurguer.Core.Service
                 }
                 var sendTask = queueClient.SendAsync(message);
                 await sendTask;
-                //var success = HandleException(sendTask);
-                //if (!success)
-                //    Thread.Sleep(10000 * (tries < 60 ? tries++ : tries));
-                //else
-                //    _messages.Remove(message);
+                var success = HandleException(sendTask);
+                if (!success)
+                    Thread.Sleep(10000 * (tries < 60 ? tries++ : tries));
+                else
+                    _messages.Remove(message);
             }
+        }
+
+        public bool HandleException(Task task)
+        {
+            if (task.Exception == null || task.Exception.InnerExceptions.Count == 0) return true;
+
+            task.Exception.InnerExceptions.ToList().ForEach(innerException =>
+            {
+                Console.WriteLine($"Error in SendAsync task: {innerException.Message}. Details:{innerException.StackTrace} ");
+
+                if (innerException is ServiceBusCommunicationException)
+                    Console.WriteLine("Connection Problem with Host. Internet Connection can be down");
+            });
+
+            return false;
         }
     }
 }
