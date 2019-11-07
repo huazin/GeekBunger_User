@@ -51,6 +51,13 @@ namespace Fiap.GeekBurguer.Users
                 cfg.CreateMap<Fiap.GeekBurguer.Users.Contract.FoodRestrictions, Fiap.GeekBurguer.Domain.Model.FoodRestrictions>();
                 cfg.CreateMap<Fiap.GeekBurguer.Domain.Model.FoodRestrictions, Fiap.GeekBurguer.Users.Contract.FoodRestrictions>();
 
+                cfg.CreateMap<Fiap.GeekBurguer.Users.Contract.Restriction, Fiap.GeekBurguer.Domain.Model.Restriction>();
+                cfg.CreateMap<Fiap.GeekBurguer.Domain.Model.Restriction, Fiap.GeekBurguer.Users.Contract.Restriction>();
+
+                cfg.CreateMap<Fiap.GeekBurguer.Users.Contract.RestrictionOther, Fiap.GeekBurguer.Domain.Model.RestrictionOther>();
+                cfg.CreateMap<Fiap.GeekBurguer.Domain.Model.RestrictionOther, Fiap.GeekBurguer.Users.Contract.RestrictionOther>();
+
+
             });
             IMapper mapper = config.CreateMapper();
             services.AddSingleton(mapper);
