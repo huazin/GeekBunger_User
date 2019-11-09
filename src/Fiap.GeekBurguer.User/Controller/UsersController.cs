@@ -31,7 +31,7 @@ namespace Fiap.GeekBurguer.Users.Controller
         public static Guid FaceListId;
         #endregion
 
-        public UsersController()
+        public UsersController(IConfiguration configuration)
         {
             UserIdUm = new Guid("31914279-0fec-44a3-864e-70a31c8bf832");
             UserIdDois = new Guid("5673d5ce-2284-4786-984d-a8d69b2fd8a4");
@@ -59,18 +59,15 @@ namespace Fiap.GeekBurguer.Users.Controller
                     Others = "ovos"
                 }
             );
+
+            Configuration = configuration;
         }
 
 
         [HttpGet]
         public IActionResult GetUserByFace(User user)
         {
-            Configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            FaceListId = Guid.Parse(confi ["FaceListId"]);
+            FaceListId = Guid.Parse(Configuration["FaceListId"]);
 
             faceServiceClient = new FaceServiceClient(Configuration["KeyFaceDetectionAPI"], Configuration["UrlFaceDetectionApi"]);
 
