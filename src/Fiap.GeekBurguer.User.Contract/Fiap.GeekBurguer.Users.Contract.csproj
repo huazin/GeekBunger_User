@@ -5,6 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Fiap GeekBurguer Users Microservice Contract</Description>
     <Authors>Bruno Lemes, Robson, Wallace</Authors>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
 </Project>
